@@ -6,7 +6,10 @@
     </head>
     <body>
         <?php
-        
+            if(isset($_COOKIE['error'])){
+                echo $_COOKIE['error'];
+                setcookie("error",NULL,time()-3600);
+            }
         ?>
     </body>
 </html>
