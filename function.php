@@ -9,16 +9,49 @@ function con(){
     }
     return $con;
 }
-//向指定项目表中插入数据,成功返回1，否则返回0
+/***********向指定项目表中插入数据,如果没有检索到的话插入，如果已有数据，就更新数据*******
+****************************************成功返回1，否则返回0******************************/
 function insert_item($sheet,$title,$link,$description,$pubdate){
     $con = con();
-    $sql = "insert into $sheet(title,link,description,pubdate) value('$title','$link','$description','$pubdate')";
+    if(0 === isset_item($sheet,$title)){
+        $sql = "insert into $sheet(title,link,description,pubdate) value('$title','$link','$description','$pubdate')";
+        echo "insert into".$sheet;
+    }
+    else{
+        $sql = "update $sheet set description='$description' , link='$link' , pubdate='$pubdate' where title='$title'";
+        echo "update".$sheet;
+    }
     if(!mysqli_query($con,$sql)){
         setcookie("error","Error in inserting into sheet:"."<br>".mysqli_error($con),time()+3600);
         header("Loction: error.php");
         return 0;
         die();
     }
+    mysqli_close($con);
+    return 1;
+}
+
+//判断指定表中是否有指定标题的这一项，如果是返回1，没有检索到返回0，查询出现异常返回-1
+function isset_item($sheet,$title){
+    $con = con();
+    $sql = "select * from $sheet where title='$title'";
+    if(!mysqli_query($con,$sql)){
+        if(mysqli_errno($con) === 1032){
+            mysqli_close($con);
+            echo mysqli_error($con);
+            die();
+            return 0;
+        }
+        else{
+            setcookie("error","Error in selecting from sheet".mysqli_error($con),time()+3600);
+            header("Location: error.php");
+            die();
+            return -1;
+        }
+    }
+    $result = mysqli_query($con,$sql);
+    if(0 === mysqli_num_rows($result))
+        return 0;
     mysqli_close($con);
     return 1;
 }
@@ -42,10 +75,18 @@ function select_item($sheet,$begin,$num){
     return $item;
 }
 
-//更新频道信息,成功返回1，否则返回0
+/**********更新频道信息,如果已有频道，则更新，如果没有，就新建一个频道*****
+ ******************成功返回1，否则返回0************************************/
 function update_channel($title,$link,$description,$pubdate){
     $con = con();
-    $sql = "update channel set link='$link' and description='$description' and pubdate='$pubdate' where title='$title'";
+    if(1 === isset_item("channel", $title)){
+        $sql = "update channel set link='$link', description='$description' , pubdate='$pubdate' where title='$title'";
+        echo "update channel";
+    }
+    else{
+        $sql = "insert into channel(title,description,link,pubdate) value('$title','$description','$link','$pubdate')";
+        echo "insert into channel";
+    }
     if(!mysqli_query($con,$sql)){
         setcookie("error","Error in updating channel:"."<br>".mysqli_error($con));
         header("Location: error.php");
@@ -54,6 +95,21 @@ function update_channel($title,$link,$description,$pubdate){
     }
     mysqli_close($con);
     return 1;
+}
+
+//用来去除指定字符串中的多余空格
+function nospace($str){
+    $str=explode(" ",$str);
+	for($i=0,$j=0;$i<count($str);$i++)
+	{
+	   if($str[$i]!='	')
+	   {
+	    $stb[$j]=$str[$i];
+		$j++;
+	    }
+	}
+	$string = implode("",$stb);
+        return $string;
 }
 
 /****************用DOMDocument操作XML文档************************
@@ -71,23 +127,23 @@ function domdocument($xmlsrc,$sheet){
     $itemTag = $xml->getElementsByTagName("item");
     //给channel赋值，获取关于频道的信息
     foreach($channelTag as $value){
-        $channel['title'] = $value->getElementsByTagName("title")->item(0)->nodeValue;
-        $channel['description'] = $value->getElementsByTagName("description")->item(0)->nodeValue;
-        $channel['link'] = $value->getElementsByTagName("link")->item(1)->nodeValue;
+        $channel['title'] = nospace($value->getElementsByTagName("title")->item(0)->nodeValue);
+        $channel['description'] = nospace($value->getElementsByTagName("description")->item(0)->nodeValue);
+        $channel['link'] = str_replace(" ","",$value->getElementsByTagName("link")->item(1)->nodeValue);
         $channel['pubdate'] = $value->getElementsByTagName("pubDate")->item(0)->nodeValue;
     }
     //获取关于频道下的项目的信息,存入表中
     $id=0; //id表示item的列号
     foreach($itemTag as $value){
-        $item[$id]['title'] = $value->getElementsByTagName("title")->item(0)->nodeValue;
-        $item[$id]['description'] = $value->getElementsByTagName("description")->item(0)->nodeValue;
-        $item[$id]['link'] = $value->getElementsByTagName("link")->item(0)->nodeValue;
+        $item[$id]['title'] = nospace($value->getElementsByTagName("title")->item(0)->nodeValue);
+        $item[$id]['description'] = nospace($value->getElementsByTagName("description")->item(0)->nodeValue);
+        $item[$id]['link'] = str_replace(" ","",$value->getElementsByTagName("link")->item(0)->nodeValue);
         $item[$id]['pubdate'] = $value->getElementsByTagName("pubDate")->item(0)->nodeValue;
         $id++;  
     }
     update_channel($channel['title'],$channel['link'],$channel['description'],$channel['pubdate']);
     foreach($item as $row){
-        insert_item($sheet,$row['title'],$row['link'],$row['description'],$row['pubdate']);
+            insert_item($sheet,$row['title'],$row['link'],$row['description'],$row['pubdate']);
     }
     return 1;
 }
