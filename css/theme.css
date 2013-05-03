@@ -1,0 +1,70 @@
+#first{
+	width:1325px;
+	height: 24px;
+	background-color: black;
+	text-align: center;
+}
+#one
+{
+	color: white;
+	width: 48px;
+	height: 16px;
+	text-decoration: none;
+}
+#second{
+	width:1325px;
+	height: 37px;
+	background-color: grey;
+	padding: 10px 20px;
+	text-align: center;
+}
+#third{
+	width: 1325px;
+	height: 40px;
+	text-align: center;
+}
+#two{
+	color: red;
+	text-decoration: none;
+	font-size: 30px;
+}
+#fourth{
+	width: 300px;
+	float: left;
+	height: 600px;
+	border-color: grey;
+	border-style: dashed;
+
+}
+#three{
+	height:60px;
+	background-color: yellow;
+	padding: 0px;
+}
+#four{
+	height: 180px;
+	background-color: red;
+	padding: 0px;
+}
+#five{
+	height: 180px;
+	background-color: pink;
+	padding: 0px;
+
+}
+#six{
+	height: 180px;
+	background-color: orange;
+	padding: 0px;
+
+}
+#fifth{
+	background-color: green;
+	float：right; 
+	height: 680px;
+	overflow:auto; 
+}
+#head{
+	padding: 0px;
+	margin: 0px;
+}

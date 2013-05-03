@@ -15,11 +15,9 @@ function insert_item($sheet,$title,$link,$description,$pubdate){
     $con = con();
     if(0 === isset_item($sheet,$title)){
         $sql = "insert into $sheet(title,link,description,pubdate) value('$title','$link','$description','$pubdate')";
-        echo "insert into".$sheet;
     }
     else{
         $sql = "update $sheet set description='$description' , link='$link' , pubdate='$pubdate' where title='$title'";
-        echo "update".$sheet;
     }
     if(!mysqli_query($con,$sql)){
         setcookie("error","Error in inserting into sheet:"."<br>".mysqli_error($con),time()+3600);
@@ -36,20 +34,13 @@ function isset_item($sheet,$title){
     $con = con();
     $sql = "select * from $sheet where title='$title'";
     if(!mysqli_query($con,$sql)){
-        if(mysqli_errno($con) === 1032){
-            mysqli_close($con);
-            echo mysqli_error($con);
-            die();
-            return 0;
-        }
-        else{
             setcookie("error","Error in selecting from sheet".mysqli_error($con),time()+3600);
             header("Location: error.php");
             die();
             return -1;
-        }
     }
     $result = mysqli_query($con,$sql);
+    //判断取出的元素是否为空
     if(0 === mysqli_num_rows($result))
         return 0;
     mysqli_close($con);
@@ -59,7 +50,7 @@ function isset_item($sheet,$title){
 //从指定项目表中提取指定数量的数据,返回一张表
 function select_item($sheet,$begin,$num){
     $con = con();
-    $sql = "select * from $sheet limit $begin,$num";
+    $sql = "select * from $sheet ORDER BY pubdate DESC limit $begin,$num";
     if(!mysqli_query($con,$sql)){
         setcookie("error","Error in querying from sheet:"."<br>".mysqli_error($con),time()+3600);
         header("Location: error.php");
@@ -81,11 +72,9 @@ function update_channel($title,$link,$description,$pubdate){
     $con = con();
     if(1 === isset_item("channel", $title)){
         $sql = "update channel set link='$link', description='$description' , pubdate='$pubdate' where title='$title'";
-        echo "update channel";
     }
     else{
         $sql = "insert into channel(title,description,link,pubdate) value('$title','$description','$link','$pubdate')";
-        echo "insert into channel";
     }
     if(!mysqli_query($con,$sql)){
         setcookie("error","Error in updating channel:"."<br>".mysqli_error($con));
@@ -102,13 +91,13 @@ function nospace($str){
     $str=explode(" ",$str);
 	for($i=0,$j=0;$i<count($str);$i++)
 	{
-	   if($str[$i]!='	')
+	   if($str[$i]!=' ')
 	   {
 	    $stb[$j]=$str[$i];
 		$j++;
 	    }
 	}
-	$string = implode("",$stb);
+	$string = implode(" ",$stb);
         return $string;
 }
 
@@ -116,13 +105,12 @@ function nospace($str){
  *****************成功返回 1 ，否则返回0************************/
 function domdocument($xmlsrc,$sheet){
     $xml = new DOMDocument();
-    if(!$xml->load($xmlsrc)){
+    if(!$xml->loadXML($xmlsrc)){
         setcookie("error","无法解析的RSS地址",time()+3600);
         header("Loaction: error.php");
         return 0;
         die();
     }
-    $xml->load($xmlsrc);
     $channelTag = $xml->getElementsByTagName("channel");
     $itemTag = $xml->getElementsByTagName("item");
     //给channel赋值，获取关于频道的信息
