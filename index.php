@@ -29,7 +29,7 @@
                 }
                 else{
                     error.innerHTML = "";
-                    subscription(xmlurl.innerHTML,category);
+                    subscription(xmlurl.value,category);
                 }
             }
             function getCategory(str){

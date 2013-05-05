@@ -21,11 +21,9 @@ function nospace($str){
 
 /****************用DOMDocument操作XML文档************************
  *****************成功返回 1 ，否则返回0************************/
-function domdocument($xmlsrc,$channel){
+function domdocument($xmlsrc,$type){
     $xml = new DOMDocument();
-    if(!$xml->loadXML($xmlsrc)){
-        setcookie("error","无法解析的RSS地址",time()+3600);
-        header("Loaction: error.php");
+    if(!$xml->load($xmlsrc)){
         return 0;
         die();
     }
@@ -47,9 +45,9 @@ function domdocument($xmlsrc,$channel){
         $item[$id]['pubdate'] = $value->getElementsByTagName("pubDate")->item(0)->nodeValue;
         $id++;  
     }
-    update_channel($channel,$channel['title'],$channel['link'],$channel['description'],$channel['pubdate']);
+    update_channel($type,$channel['title'],$channel['link'],$channel['description'],$channel['pubdate']);
     foreach($item as $row){
-            insert_item("item",$row['title'],$row['link'],$row['description'],$row['pubdate']);
+            insert_item("item",$channel['title'],$row['title'],$row['link'],$row['description'],$row['pubdate']);
     }
     return 1;
 }

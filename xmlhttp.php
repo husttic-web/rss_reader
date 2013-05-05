@@ -1,30 +1,20 @@
 <?php
 /*
- * 该文件中的函数用来处理通过XMLHttpRequest传来的信息，同时进行回递
+ * 接收ajax请求，并调用reponseFunction中的函数对请求进行处理
  */
-include 'XMLReader.php';
-
+include 'reponseFunction.php';
 /*
- * 该函数接收发送来的关于订阅RSS的请求，成功返回1,否则返回0
+ * 接收请求，判断请求类型
  */
-function subscription(){
-    $xmlurl = $_GET['xmlurl'];
-    $channel = $_GET['channel'];
-    if(!domdocument($xmlurl, $channel)){
-        setcookie("error","连接失败，请核实RSS源",time()+3600);
-        header("Location: index.php");
-        return 0;
-        die();
+if(isset($_GET['type'])){
+    if($_GET['type']==="subscription"){
+        if(subscription())
+            echo "success";
+        else
+            echo "fail";
     }
     else{
-        return 1;
+        morenews();
     }
-}
-
-/*
- * 该函数接收发送来的关于请求更多的新闻信息的请求，以XML文档的形式返回，用来JS进行解析
- */
-function morenews(){
-    
 }
 ?>

@@ -15,18 +15,25 @@ function createXMLHttp(){
 function subscription(xmlurl,channel){
     var xmlhttp = createXMLHttp();
     var url;
-    url = "xmlhttp.php";
+    var loc = window.location.href;
+    url = loc.substring(0,loc.lastIndexOf('/'));
+    url = url + "/xmlhttp.php";
     url = url + "?xmlurl="+xmlurl;
     url = url + "&channel="+channel;
+    url = url + "&type=subscription";
     url = url + "&id=" + Math.random();
     xmlhttp.onreadystatechange = function stateChangeOnSubscription(){
-                                            var state;
+                                            var state,error;
                                             state = document.getElementById("state");
-                                            if(xmlhttp.readystate !== 4){
+                                            error = document.getElementById("error");
+                                            if(xmlhttp.readystate !== 4 && xmlhttp.readystate !== "complete"){
                                                     state.innerHTML = "正在连接中，请稍后";
                                             }
                                             else{
-                                                    state.innerHTML = "连接成功";
+                                                    if(xmlhttp.responseText === "success")
+                                                        state.innerHTML = "连接成功！";
+                                                    else
+                                                        error.innerHTML = xmlhttp.responseText;
                                             }
                                     };
     xmlhttp.open("GET",url,true);
@@ -42,6 +49,7 @@ function moreNews(channeltitle){
     xmlhttp = creatXMLHttp();
     query = "xmlhttp.php";
     query = query + "?title=" + channeltitle;
+    query = query + "&type=morenews";
     query = query + "&id=" + Math.random();
     xmlhttp.onreadystatechange = stateChangeOnMoreNews();
     xmlhttp.open("GET",xmlhttp,true);
