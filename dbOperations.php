@@ -46,9 +46,9 @@ function isset_item($sheet,$title){
 }
 
 //从指定项目表中提取指定数量的数据,返回一张表
-function select_item($sheet,$begin,$num){
+function select_item($sheet,$channeltitle,$begin,$num){
     $con = con();
-    $sql = "select * from $sheet ORDER BY pubdate DESC limit $begin,$num";
+    $sql = "select * from $sheet ORDER BY pubdate DESC limit $begin,$num where channeltitle='$channeltitle'";
     if(!mysqli_query($con,$sql)){
         setcookie("error","Error in querying from sheet:"."<br>".mysqli_error($con),time()+3600);
         header("Location: error.php");
