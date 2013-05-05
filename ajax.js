@@ -12,23 +12,25 @@ function createXMLHttp(){
 /*
  * 以下函数实现订阅的功能
  */
-function subscription(xmlurl){
+function subscription(xmlurl,channel){
     var xmlhttp = createXMLHttp();
     var url;
     url = "xmlhttp.php";
     url = url + "?xmlurl="+xmlurl;
+    url = url + "&channel="+channel;
     url = url + "&id=" + Math.random();
-    xmlhttp.onreadystatechange = stateChangeOnSubscription();
+    xmlhttp.onreadystatechange = function stateChangeOnSubscription(){
+                                            var state;
+                                            state = document.getElementById("state");
+                                            if(xmlhttp.readystate !== 4){
+                                                    state.innerHTML = "正在连接中，请稍后";
+                                            }
+                                            else{
+                                                    state.innerHTML = "连接成功";
+                                            }
+                                    };
     xmlhttp.open("GET",url,true);
     xmlhttp.send();
-}
-
-function stateChangeOnSubscription(){
-    var state;
-    state = document.getElementById("state");
-    if(xmlhttp.readystate === 4){
-        state.innerHTML = "正在连接中，请稍后";
-    }
 }
 
 /*

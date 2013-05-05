@@ -6,6 +6,36 @@
 	<title>google reader</title>
 	<style type="text/css"></style>
 	<link rel="stylesheet" type="text/css" href="css/theme.css">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script src="ajax.js"></script>
+        <script>
+            var category="news";
+            $(document).ready(function(){
+                $("div#news").click(function(){
+                    $("div#newsinfo").slideToggle("slow");
+                });
+                $("div#tech").click(function(){
+                    $("div#techinfo").slideToggle("slow");
+                });
+                $("div#economic").click(function(){
+                    $("div#economicinfo").slideToggle("slow");
+                });
+            });
+            function onClickForSubscription(){
+                var xmlurl = document.getElementById("xmlurl");
+                var error = document.getElementById("error");
+                if(xmlurl.value === ""){
+                    error.innerHTML = "请输入RSS源";
+                }
+                else{
+                    error.innerHTML = "";
+                    subscription(xmlurl.innerHTML,category);
+                }
+            }
+            function getCategory(str){
+                category = str;
+            }
+        </script>
 </head>
 <body>
 	<div id="first">
@@ -28,21 +58,28 @@
 	<div id="fourth">
 		<div id="three">
                         <input type="text" id="xmlurl" style='height:18px;' />
-                        <input type="button" value="订阅" /><br><br>
-                        <input type="radio" name="category" checked="checked" />新闻&nbsp;|
-                        <input type="radio" name="category" />科技&nbsp;|
-                        <input type="radio" name="category" />经济
+                        <input type="button" value="订阅" onclick="onClickForSubscription();" /><br><br>
+                        <input type="radio" name="category" checked="checked" value="news" onclick="getCategory('news');"/>新闻&nbsp;|
+                        <input type="radio" name="category" value="tech" onclick="getCategory('tech');"/>科技&nbsp;|
+                        <input type="radio" name="category" value="economic" onclick="getCategory('economic');"/>经济<br><br>
                         <div id="state"></div>
                         <div id="error"></div>
 		</div>
 		<div id="four">
 			<h2>分类</h2>
-			<ul class="category">
-                            <li>新闻</li>
-                            <li>科技</li>
-                            <li>经济</li>
-                            <?php //根据XML文件来源进行分类 ?>
-			</ul>
+                            <div class="channel" id="news">新闻</div>
+                                <div class="category" id="newsinfo">
+                                    <p class="category">你好！</p>
+                                    <p class="category">hello!</p>
+                                </div>
+                            <div class="channel" id="tech">科技</div>
+                                <div class="category" id="techinfo">
+                                    
+                                </div>
+                            <div class="channel" id="economic">经济</div>
+                                <div class="category" id="economicinfo">
+                                    
+                                </div>
 		</div>
 	</div>
 	<div id="third">
