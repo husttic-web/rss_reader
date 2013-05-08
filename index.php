@@ -8,6 +8,8 @@
 	<link rel="stylesheet" type="text/css" href="css/theme.css">
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
         <script src="ajax.js"></script>
+		<script src="showmore.js"></script>
+	
         <script>
             var category="news";
             $(document).ready(function(){
@@ -89,7 +91,10 @@
 		<input type="button" value="视图设置">
 	</div>
 	<div id="fifth">
-		
-	</div>
+		<button type="button" onclick="showHint('a')"> showmore</button> 
+		<p id="a">sdsd <p>
+	
+	
 	
 </body>
+</html>
