@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <?php include 'XMLReader.php'; ?>
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>google reader</title>
+	<title>google readera</title>
 	<style type="text/css"></style>
 	<link rel="stylesheet" type="text/css" href="css/theme.css">
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>

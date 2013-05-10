@@ -1,5 +1,5 @@
 var xmlHttp;
-
+//随便加点什么
 function showHint(str)
 {
 if (str.length==0)
