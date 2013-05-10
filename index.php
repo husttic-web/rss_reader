@@ -31,7 +31,7 @@
                 }
                 else{
                     error.innerHTML = "";
-                    subscription(xmlurl.value,category);
+                    subscription(xmlurl.innerHTML,category);
                 }
             }
             function getCategory(str){
